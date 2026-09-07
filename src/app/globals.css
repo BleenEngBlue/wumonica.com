@@ -1,0 +1,208 @@
+/* ============================================================
+   globals.css — wumonica.com (Next.js + Tailwind CSS v4)
+   Aesthetic: Obsidian (dark, default) + Vellum (light)
+   Fonts: Cormorant Garamond (display) · DM Mono (mono/ui) · DM Sans (body)
+   WCAG 2.2 AA. Zero third-party requests (fonts via next/font/local).
+   ============================================================ */
+@import "tailwindcss";
+
+/* Theme is a data attribute on <html>, set before paint (see layout.tsx). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
+/* ---------- Design tokens (light = Vellum) ---------- */
+:root {
+  --c-bg:          #f5f0e8;
+  --c-surface:     #ece4d2;
+  --c-surface-2:   #e3d9c8;
+  --c-text:        #1a1410;
+  --c-text-2:      #3a2e26;   /* 11.6:1 on bg (was #4a3d34, 9.2:1) — secondary text was reading thin on cream */
+  --c-text-3:      #574a3e;   /* 7.5:1 on bg, 6.1:1 on surface-2 (was #6b5d4e, 4.6:1 on surface-2) */
+  --c-border:      rgba(26, 20, 16, 0.10);
+  --c-border-2:    rgba(26, 20, 16, 0.20);
+  --c-accent:      #5a2d6e;   /* deep plum — warm enough for cream; same family as the dark theme's violet */
+  --c-accent-h:    #4a2259;
+  --c-accent-soft: rgba(90, 45, 110, 0.10);
+  --c-accent-ink:  #5a2d6e;   /* accent for TEXT — 9.1:1 on bg, 8.2:1 surface, 7.4:1 surface-2 (AAA) */
+  --c-focus:       #5a2d6e;
+  --c-grid:        rgba(90, 45, 110, 0.05);
+  --nav-h: 64px;
+  color-scheme: light;
+}
+
+/* Dark = Obsidian */
+[data-theme="dark"] {
+  /* Sept 7, 2026 refinement: deep slate instead of near-black; accent desaturated one step.
+     Fintech/healthcare hiring managers read "calm and precise" as competence — the neon
+     violet-on-black register reads "crypto landing page." Contrast on every pair ≥ 7:1. */
+  --c-bg:          #0b0d12;
+  --c-surface:     #11141b;
+  --c-surface-2:   #161a23;
+  --c-text:        #f4f4f5;
+  --c-text-2:      #b6b9c2;   /* was #a1a1aa — body copy now 10.4:1 */
+  --c-text-3:      #8e929d;   /* was #90909c — labels 6.2:1 */
+  --c-border:      rgba(255, 255, 255, 0.08);
+  --c-border-2:    rgba(255, 255, 255, 0.14);
+  --c-accent:      #8f7bf0;
+  --c-accent-h:    #a998f7;
+  --c-accent-soft: rgba(143, 123, 240, 0.10);
+  --c-accent-ink:  #b3a3fb;   /* accent for TEXT — 9.6:1 on bg */
+  --c-focus:       #b3a3fb;
+  --c-grid:        rgba(143, 123, 240, 0.03);
+  color-scheme: dark;
+}
+
+@media (prefers-contrast: more) {
+  :root               { --c-text-3: #3d3229; --c-border-2: #8a7a66; }
+  [data-theme="dark"] { --c-text-3: #9a9d8f; --c-border-2: #4a4d40; }
+}
+
+/* ---------- Expose tokens to Tailwind utilities ----------
+   `inline` makes utilities reference the live CSS variable, so the
+   same class (e.g. bg-bg, text-ink-2) re-themes when data-theme flips. */
+@theme inline {
+  --color-*: initial;                 /* drop Tailwind's default palette — we only ship ours */
+  --color-bg:          var(--c-bg);
+  --color-surface:     var(--c-surface);
+  --color-surface-2:   var(--c-surface-2);
+  --color-ink:         var(--c-text);
+  --color-ink-2:       var(--c-text-2);
+  --color-ink-3:       var(--c-text-3);
+  --color-line:        var(--c-border);
+  --color-line-2:      var(--c-border-2);
+  --color-accent:      var(--c-accent);
+  --color-accent-h:    var(--c-accent-h);
+  --color-accent-soft: var(--c-accent-soft);
+  --color-accent-ink:  var(--c-accent-ink);
+  --color-focus:       var(--c-focus);
+  --color-grid:        var(--c-grid);
+  --color-transparent: transparent;
+  --color-current:     currentColor;
+
+  --font-display: var(--font-cormorant), Georgia, "Times New Roman", serif;
+  --font-mono:    var(--font-dm-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-sans:    var(--font-dm-sans), system-ui, -apple-system, "Segoe UI", sans-serif; /* self-hosted; never left to the OS */
+
+  /* Sept 7, 2026: hero scaled down ~20% — a 9.5rem surname is a poster, not a product engineer's
+     page; the freed height pulls the tagline, stats, and CTA into the first viewport on a 13" laptop. */
+  --text-hero-first: clamp(2.75rem, 6vw, 4.5rem);
+  --text-hero-last:  clamp(4.25rem, 10.5vw, 7.5rem);
+  --text-tagline:    clamp(1.125rem, 2vw, 1.375rem);
+  --text-h2:         clamp(1.875rem, 3.6vw, 2.75rem);
+
+  --container-site: 1080px;
+
+  /* Layout breakpoint where the nav collapses (matches the original 860px design) */
+  --breakpoint-nav: 861px;
+
+  --ease-ui: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--nav-h); /* WCAG 2.4.11 — focused targets clear the sticky header.
+                                          The ONLY anchor offset: sections carry their own py-24, so no
+                                          scroll-margin-top on section[id] (the two stacked → ~100px of the
+                                          previous section showed under the header on every nav jump). */
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;   /* 17px — DM Sans sets small; 17/1.65 is the comfortable reading size */
+    line-height: 1.65;
+    color: var(--c-text);
+    background-color: var(--c-bg);
+    -webkit-font-smoothing: antialiased;  /* dark theme: keeps light-on-dark glyphs from blooming */
+    text-rendering: optimizeLegibility;
+    transition: background-color 260ms var(--ease-ui), color 260ms var(--ease-ui);
+  }
+  a {
+    color: var(--c-text);
+    text-decoration: underline;
+    text-decoration-color: var(--c-border-2);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: color 140ms var(--ease-ui), text-decoration-color 140ms var(--ease-ui);
+  }
+  a:hover { color: var(--c-accent); text-decoration-color: var(--c-accent); }
+  :focus-visible {
+    outline: 3px solid var(--c-focus);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  h1, h2, h3, h4 { font-weight: 600; line-height: 1.1; color: var(--c-text); }
+
+  /* ---- Light theme (Vellum) weight compensation ----
+     `antialiased` thins glyphs on light backgrounds (macOS especially), and
+     Cormorant's 300/600 cuts lose their strokes on cream. Use the platform
+     default smoothing and step the display cuts up one weight; body text
+     keeps 400 but gains contrast from the darker --c-text-2 / --c-text-3. */
+  [data-theme="light"] body { -webkit-font-smoothing: auto; }
+  [data-theme="light"] .font-display.font-semibold { font-weight: 700; }
+  [data-theme="light"] .font-mono                  { font-weight: 500; }
+  ::selection { background: var(--c-accent); color: var(--c-bg); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+/* ---------- Small set of composed utilities ----------
+   Kept deliberately tiny; everything else is Tailwind utilities in JSX. */
+@utility container-site {
+  width: 100%;
+  max-width: var(--container-site);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+  @media (max-width: 860px) { padding-inline: 1.25rem; }
+}
+
+/* Hero background grid, masked to fade out toward bottom-left */
+@utility hero-grid {
+  background-image:
+    linear-gradient(var(--c-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--c-grid) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(120% 90% at 70% 0%, #000 0%, transparent 70%);
+          mask-image: radial-gradient(120% 90% at 70% 0%, #000 0%, transparent 70%);
+}
+
+/* Translucent sticky header background */
+@utility header-glass {
+  background-color: color-mix(in srgb, var(--c-bg) 88%, transparent);
+  backdrop-filter: saturate(160%) blur(12px);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
+}
+
+/* Pulsing status dot */
+@keyframes pulse-dot {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c-accent) 55%, transparent); }
+  70%  { box-shadow: 0 0 0 6px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+@utility pulse-dot {
+  animation: pulse-dot 2.4s ease-out infinite;
+  @media (prefers-reduced-motion: reduce) { animation: none; }
+}
+
+/* Fade-in on scroll (class toggled by <FadeIn/>).
+   Progressive: only hides content when JS has run (html.js), so the page
+   is fully readable with scripts disabled or blocked. */
+@utility fade-in {
+  .js & {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .js &.is-visible { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .js & { opacity: 1; transform: none; transition: none; }
+  }
+}

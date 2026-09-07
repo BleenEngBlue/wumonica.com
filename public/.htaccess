@@ -1,0 +1,67 @@
+# ============================================================
+# wumonica.com — .htaccess for Hostinger (Apache / LiteSpeed)
+# Copied verbatim into ./out by `next build`; the CSP line below is then
+# completed by scripts/csp-hashes.mjs with the sha256 of every inline
+# script Next.js emitted. Upload the finished ./out to public_html.
+# ============================================================
+
+ServerSignature Off
+Options -Indexes -MultiViews
+DirectoryIndex index.html
+
+# ---- Force HTTPS + canonical host (Hostinger provides free SSL) ----
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  RewriteCond %{HTTP_HOST} ^www\.wumonica\.com$ [NC]
+  RewriteRule ^ https://wumonica.com%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# ---- Never serve dotfiles or build metadata ----
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+<FilesMatch "\.(map|md|json|lock|env|log)$">
+  Require all denied
+</FilesMatch>
+# (Next.js writes route manifests only inside .next/, never in ./out; the
+#  rule above is defence in depth in case something is uploaded by mistake.)
+
+# ---- Security headers ----
+<IfModule mod_headers.c>
+  # The placeholder value below is replaced by scripts/csp-hashes.mjs after `next build`
+  Header always set Content-Security-Policy "__CSP__"
+  # Add "; includeSubDomains; preload" only once EVERY subdomain (mail., ftp., …) is HTTPS-only.
+  Header always set Strict-Transport-Security "max-age=31536000" env=HTTPS
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+  Header always set Cross-Origin-Resource-Policy "same-origin"
+  Header always unset X-Powered-By
+  Header always unset Server
+
+  # ---- Caching: hashed assets forever, HTML always revalidated ----
+  <FilesMatch "\.(js|css|woff2?|ttf|otf|png|jpg|jpeg|gif|svg|webp|avif|ico)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(html|txt|xml)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# ---- Compression ----
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml font/ttf
+</IfModule>
+
+# ---- Correct MIME for self-hosted fonts ----
+<IfModule mod_mime.c>
+  AddType font/ttf .ttf
+  AddType font/woff2 .woff2
+</IfModule>
+
+# ---- 404 ----
+ErrorDocument 404 /404.html
