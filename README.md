@@ -1,65 +1,57 @@
-# wumonica.com — Next.js + React + Tailwind CSS
+# wumonica.com
 
-Monica Wu's portfolio, rewritten 27 Aug 2026 as a **Next.js (App Router, TypeScript) + React 19 + Tailwind CSS v4** static site, deployed to **Hostinger** shared hosting.
+Portfolio site for Monica Wu — AI Frontend Engineer · Design Engineer. Designed and built end to end as one surface: typography, component system, accessibility, and performance are the same job here, not separate passes.
 
-| | |
-|---|---|
-| Framework | Next.js 16 (App Router), `output: "export"` |
-| UI | React 19, TypeScript (strict) |
-| Styling | Tailwind CSS v4 (CSS-first config in `src/app/globals.css`) |
-| Fonts | Cormorant Garamond + DM Mono, self-hosted via `next/font/local` — zero third-party requests |
-| Accessibility | WCAG 2.2 AA: skip link, focus rings, 44 px targets, reduced-motion, contrast-checked tokens, live regions |
-| Security | CSP with per-build script hashes, HSTS, COOP/CORP, nosniff, frame-ancestors none — see `public/.htaccess` |
+**Live:** https://wumonica.com
 
-## Project layout
+## What it is
+
+A single-page, statically exported Next.js site with a hand-built design system: two themes (Obsidian dark, Vellum light), a display serif paired with a mono UI face and a compact body sans, and every color pair verified at WCAG 2.2 AA or better. All copy lives in one typed data file, so the components never carry strings and the site can be re-positioned by editing one file.
+
+## Stack
+
+- **Next.js 16** (App Router, `output: "export"`) · **React 19** · **TypeScript**
+- **Tailwind CSS v4** with design tokens exposed through `@theme inline`, so a single class re-themes when `data-theme` flips
+- **Self-hosted fonts** via `next/font/local` — Cormorant Garamond (display), DM Mono (UI), DM Sans (body); zero third-party requests
+- Static hosting on Apache/LiteSpeed with a hardened `.htaccess`
+
+## Decisions worth reading
+
+**One source of truth for copy.** `src/data/site.ts` holds every string, list, and structured-data object on the page. Components receive plain data through props and render it through React — nothing is injected as raw HTML. Rewriting the site's positioning is a one-file change; the JSON-LD, meta tags, hero, and footer cannot drift from each other.
+
+**Theme before paint.** A tiny constant script sets `data-theme` on `<html>` from `localStorage` or `prefers-color-scheme` before first paint, so there is no flash. The script is a static string; its SHA-256 goes into the Content-Security-Policy at build time.
+
+**Strict CSP on a static host.** `scripts/csp-hashes.mjs` runs after `next build`, hashes every inline script Next.js emitted, and writes the completed `Content-Security-Policy` header into the exported `.htaccess`. `script-src` is `'self'` plus those hashes — no `unsafe-inline`, no external hosts. The build fails on unsafe patterns rather than shipping them.
+
+**Accessibility as an acceptance criterion.** Skip link, `aria-current` on the scroll-spied nav, an accessible-name-stable theme toggle with `aria-pressed`, live-region feedback on copy-to-clipboard, `scroll-padding-top` so focused targets clear the sticky header (WCAG 2.4.11), and `prefers-reduced-motion` respected everywhere. Both themes were checked pair by pair; body and accent text sit at AAA.
+
+**Progressive by default.** Fade-in-on-scroll only engages once the theme script has added `html.js`; with scripts blocked the page is fully readable. External links get `rel="noopener noreferrer"` in one place, so there is no other way to make one.
+
+**Typography tuned per theme.** Light backgrounds thin glyphs under `antialiased` smoothing, so the light theme uses the platform default and steps the display cuts up one weight. The hero name is set at a weight chosen by looking at it on cream, not by default.
+
+## Structure
 
 ```
-src/app/            layout.tsx (metadata, theme bootstrap, JSON-LD) · page.tsx · globals.css · fonts.ts · sitemap.ts · not-found.tsx
-src/components/     Header (theme toggle, mobile nav, scroll-spy) · Hero · About · Projects · Stack · Experience · Education · Contact · Footer · FadeIn · CopyEmail · JsonLd · ui.tsx
-src/data/site.ts    ALL copy — edit here to update the site (synced to LinkedIn 27 Aug 2026)
-src/lib/theme.ts    pre-paint theme script (static constant)
-public/.htaccess    Hostinger security headers + caching (CSP completed post-build)
-scripts/csp-hashes.mjs  computes inline-script hashes into the CSP after every build
+src/
+  app/          layout, page, globals.css (tokens + base), fonts, sitemap
+  components/   Header, Hero, About, Projects, Stack, Experience, Education, Contact, Footer, ui primitives
+  data/site.ts  all copy, projects, experience, education, JSON-LD
+  lib/theme.ts  theme constants and the pre-paint init script
+scripts/
+  csp-hashes.mjs  post-build CSP completion
+public/
+  og.png        link-preview card, rendered with the site's own fonts
 ```
 
-## Local development
+## Build
 
 ```bash
-npm install          # Node 20.9+ (Node 22 LTS recommended)
-npm run dev          # http://localhost:3000
-npm run typecheck    # tsc --noEmit
-npm run audit        # npm audit (fails on moderate+)
+npm install
+npm run build      # next build writes ./out, then csp-hashes.mjs completes .htaccess
 ```
 
-## Build for Hostinger
+Upload `./out` to the web root. The fonts in `src/app/fonts/` are under the SIL Open Font License.
 
-```bash
-npm run build        # = next build && node scripts/csp-hashes.mjs
-```
+## License
 
-This writes a fully static site to `./out/` (`index.html`, `404.html`, `_next/static/...`, `.htaccess`, `robots.txt`, `sitemap.xml`).
-
-## Deploy to Hostinger (shared / cloud hosting)
-
-1. In **hPanel → Websites → Manage → File Manager** (or via FTP/SFTP), open `public_html`.
-2. Delete the old site files (`index.html`, `css/`, `js/`, `fonts/`).
-3. Upload **the contents of `out/`** (not the folder itself) — including the hidden `.htaccess`. In File Manager enable "Show hidden files"; with FTP clients, make sure dotfiles are transferred.
-4. hPanel → **Security → SSL**: confirm the free SSL is active (the `.htaccess` redirects HTTP → HTTPS and sends HSTS).
-5. Open https://wumonica.com and check headers, e.g. https://securityheaders.com — expect an A/A+ with `Content-Security-Policy` present.
-
-Re-deploy = `npm run build` → re-upload `out/`. Because Next hashes asset filenames, uploading over the old files is safe; the `.htaccess` sets long-lived immutable caching for `_next/static` and `no-cache` for HTML.
-
-> Hostinger's Node.js hosting can also run `next start`, but this site has no server-side features, so the static export is simpler, faster, and has a smaller attack surface.
-
-## Updating content
-
-Everything is data in `src/data/site.ts` (hero, about, projects, stack, experience, education, contact, JSON-LD). Change the text there, bump `SITE.updated`, and rebuild. No HTML strings are rendered raw anywhere.
-
-## Security notes (what the build enforces)
-
-- **CSP**: `script-src 'self' 'sha256-…'` — only the exact inline scripts produced by this build are allowed; `style-src 'self'`; `object-src 'none'`; `frame-ancestors 'none'`; `base-uri 'self'`; `form-action 'self'`. `scripts/csp-hashes.mjs` aborts the build if it finds inline event handlers or `javascript:` URLs.
-- **No `dangerouslySetInnerHTML` with dynamic data**: the two uses are a compile-time theme constant and JSON-LD serialized with `<`, `>`, `&`, U+2028/9 escaped.
-- **External links** only through `<ExtLink>`, which always sets `rel="noopener noreferrer"`.
-- **localStorage** input is allow-listed (`light` or default `dark`) before being written to the DOM.
-- **Supply chain**: `.npmrc` sets `ignore-scripts=true` and `audit=true`; `NEXT_TELEMETRY_DISABLED=1`; `poweredByHeader: false`; no source maps in production.
-- `.htaccess` denies dotfiles and `.map/.md/.json/.env/.log` files, disables directory listing, and forces HTTPS + canonical host.
+Code: MIT. Content and design: © Monica Wu. Please don't reuse the copy, name, or visual identity.

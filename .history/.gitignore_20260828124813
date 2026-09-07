@@ -8,9 +8,8 @@ next-env.d.ts
 *.tsbuildinfo
 
 # local env files (never commit secrets). The committed .env holds only a telemetry opt-out.
-.env*
+.env*.local
 
 # misc
 .DS_Store
 npm-debug.log*
-*.log

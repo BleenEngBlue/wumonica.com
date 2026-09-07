@@ -1,7 +1,6 @@
 /**
  * site.ts — single source of truth for all copy on wumonica.com.
- * Repositioned 6 Sep 2026: design + code first, AI products second. Title everywhere = "AI Frontend Engineer".
- * LinkedIn (linkedin.com/in/monicapwu) must be re-synced to this file: headline, About, title. Public location = "Remote (US) · Pacific" only.
+ * Last content revision: 7 Sep 2026.
  * Plain data only: no HTML strings are rendered raw anywhere (see components).
  */
 
@@ -60,14 +59,14 @@ export const HERO = {
 
 export const ABOUT = {
   paragraphs: [
-    "I'm a design-trained engineer (B.A., Design) with 10 years shipping production UI end to end — design systems other teams build on, and two production AI systems shipped in 2026, each with per-stage evals and production observability. I work in TypeScript, React, Next.js, Tailwind CSS, Angular, and Python, and I treat the interface and the data model as one design problem: the reviewer's screen decided what the Workbench's data model had to be.",
+    "I'm a design-trained engineer (B.A., Design) with 10 years shipping production UI end to end — design systems other teams build on, and two production AI systems shipped in 2026, both with per-stage evals — the public agent also with production monitoring of latency, cost, and errors. I work in TypeScript, React, Next.js, Tailwind CSS, Angular, and Python, and I treat the interface and the data model as one design problem: the reviewer's screen decided what the Workbench's data model had to be.",
     "Software that moves $200M a month doesn't get to break — that's where I learned to ship. Before AI: an enterprise payments platform processing $200M+/month (Accenture), the design system behind healthcare apps used by physicians and pharmacies nationwide (Inovalon), WCAG-accessible components deployed across ~50,000 Microsoft partner websites, and clinical research apps across 9 client sites (IQVIA). When I migrated that component library across 6 major Angular versions, downstream teams saw zero regressions. That's the bar I build to.",
     "I started in design — a B.A. in Art & Design — then Code Fellows, then a decade of production TypeScript, React, Angular, and Node.js. I sketch or prototype first, then build the real thing and put it in front of someone: at Inovalon the component specs I wrote (type, spacing, states, accessibility, API) became the frontend standard for every consuming team; in 2026 I cut a human-in-the-loop review product to the one screen a reviewer needs and shipped it in 2 days. I treat AI uncertainty as a UX problem — review surfaces, guardrails, intent routing — and practice AI-assisted development daily (Claude, Cursor), ~40% faster feature delivery with every change review-ready.",
     "That AI work started at IQVIA, where our clinical apps had to run locally on-site and client hardware varied site to site — so I tested whether LLM inference could clear that bar: Llama 3.1 8B on Ollama on constrained hardware as a worst-case baseline. Self-initiated, no mandate. It established the AI roadmap for regulated clinical deployments.",
   ],
   facts: [
     { num: "10 yrs", label: "Shipping production software end to end" },
-    { num: "2", label: "Production AI systems shipped in 2026, each with per-stage evals and observability" },
+    { num: "2", label: "Production AI systems shipped in 2026, both with per-stage evals" },
     { num: "$200M+/mo", label: "Payments platform I shipped transaction-critical features for — workflows restored within SLA 100% of the time", accent: true },
     { num: "~40%", label: "Faster feature delivery with AI-assisted development (Claude, Cursor)" },
   ],
@@ -139,7 +138,7 @@ export const PROJECTS: Project[] = [
     badge: "Portfolio · Design + build",
     title: "wumonica.com — portfolio",
     sub: "Designed and built end to end in Next.js, TypeScript, and Tailwind CSS · typography, visual hierarchy, component system, accessibility, performance owned as one surface · 2016 — present",
-    links: [{ label: "GitHub", href: SITE.social.github }],
+    links: [{ label: "Source", href: "https://github.com/BleenEngBlue/wumonica.com" }],
     desc: "This site. A hand-built design system — Cormorant Garamond + DM Mono, dark and light themes, semantic HTML — rendered by Next.js (App Router, static export) and React with Tailwind CSS v4 utilities; WCAG 2.2 AA as an acceptance criterion, zero third-party requests, self-hosted fonts, and a hardened CSP. Showcases two production AI systems and 10 years of high-stakes UI.",
     stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Design systems", "Visual hierarchy", "Accessibility / WCAG 2.2 AA", "Performance"],
   },
@@ -171,7 +170,7 @@ export const EXPERIENCE: Job[] = [
     date: "Aug 2025 — present · 1 yr 1 mo",
     company: "Wumonica Studio (Independent) · Self-employed · Remote",
     role: "AI Frontend Engineer",
-    body: "Designed and built this portfolio site end to end in Next.js, TypeScript, and Tailwind CSS — typography, visual hierarchy, component system, accessibility, and performance as one surface. Shipped 2 production AI products in 2026 with full-stack ownership, from code prototype to deploy: Reconciliation Workbench (human-in-the-loop review UI designed around the one screen a reviewer needs; Python, Gradio, exportable audit trail; 100% recall, 1.0 precision against seeded ground truth; built in 2 days) and Digital Twin (agentic RAG with Python, OpenAI API, ChromaDB; live since May 2026). Let the interface shape the data: because every source had to look identical on the reviewer's screen, jurisdictions (US sales tax, EU e-invoicing/CTC) became pure configuration via a declarative connector layer — a new country is one JSON entry, zero code changes. Per-stage eval harnesses isolate the degraded stage; latency, cost, and errors monitored in production. Practice AI-assisted development daily (Claude, Cursor), cutting feature delivery time by ~40% while keeping every change review-ready.",
+    body: "Designed and built this portfolio site end to end in Next.js, TypeScript, and Tailwind CSS — typography, visual hierarchy, component system, accessibility, and performance as one surface. Shipped 2 production AI products in 2026 with full-stack ownership, from code prototype to deploy: Reconciliation Workbench (human-in-the-loop review UI designed around the one screen a reviewer needs; Python, Gradio, exportable audit trail; 100% recall, 1.0 precision against seeded ground truth; built in 2 days) and Digital Twin (agentic RAG with Python, OpenAI API, ChromaDB; live since May 2026). Let the interface shape the data: because every source had to look identical on the reviewer's screen, jurisdictions (US sales tax, EU e-invoicing/CTC) became pure configuration via a declarative connector layer — a new country is one JSON entry, zero code changes. Per-stage eval harnesses isolate the degraded stage; on Digital Twin, latency, cost, and errors are monitored in production. Practice AI-assisted development daily (Claude, Cursor), cutting feature delivery time by ~40% while keeping every change review-ready.",
     tags: ["Design + build", "Next.js", "Tailwind CSS", "TypeScript", "Human-in-the-loop UI", "Agentic RAG", "Evals", "Python", "OpenAI API", "Claude", "Cursor"],
   },
   {
