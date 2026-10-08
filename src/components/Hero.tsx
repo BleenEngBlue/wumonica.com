@@ -15,7 +15,7 @@ export function Hero() {
         // violet glow, dark theme only
         "dark:before:content-[''] dark:before:absolute dark:before:-top-40 dark:before:-left-20",
         "dark:before:w-[720px] dark:before:h-[720px] dark:before:pointer-events-none",
-        "dark:before:bg-[radial-gradient(ellipse,rgba(139,92,246,0.10)_0%,transparent_65%)]",
+        "dark:before:bg-[radial-gradient(ellipse,var(--c-accent-soft)_0%,transparent_65%)]",
       )}
     >
       <div className="absolute inset-0 pointer-events-none hero-grid" aria-hidden="true" />

@@ -17,8 +17,8 @@ export function Projects() {
             className={cx(
               "bg-bg border rounded-xl p-8 mb-8 last:mb-0 transition-colors",
               p.featured
-                ? "border-line-2 hover:border-[rgba(139,92,246,0.45)]"
-                : "border-line hover:border-[rgba(139,92,246,0.30)]",
+                ? "border-line-2 hover:border-accent/45"
+                : "border-line hover:border-accent/30",
             )}
           >
             <div className="flex justify-between items-start gap-6 mb-6 flex-wrap max-nav:flex-col max-nav:items-start">
