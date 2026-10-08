@@ -30,7 +30,7 @@ export function Hero() {
         </p>
 
         <h1 id="hero-name" className="font-display tracking-[-0.025em] leading-[0.88] mb-0">
-          <span className="block text-hero-first font-medium italic text-accent leading-none">Monica</span>
+          <span className="block text-hero-first font-semibold italic text-accent leading-none">Monica</span>
           <span className="block text-hero-last font-bold text-ink leading-[0.87] -mt-[0.04em]">Wu</span>
         </h1>
         <div className="w-16 h-px bg-accent mt-8 mb-7" aria-hidden="true" />

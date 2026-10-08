@@ -86,7 +86,7 @@ export function GhostLink({ href, children }: { href: string; children: ReactNod
 export function SectionHead({ index, id, children }: { index: string; id: string; children: ReactNode }) {
   return (
     <div className="flex items-baseline gap-4 mb-12">
-      <span className="font-mono text-xs text-accent-ink font-medium tracking-[0.08em]">{index}</span>
+      <span className="font-mono text-xs text-accent-ink font-semibold tracking-[0.08em]">{index}</span>
       <h2 id={id} className="font-display text-h2 font-bold tracking-[-0.02em] leading-[1.05]">
         {children}
       </h2>
