@@ -1,0 +1,90 @@
+# wumonica.com — CI quality gate
+#
+# Runs on every push and pull request. Nothing deploys from here:
+#   - Vercel builds from Git on its own (connect the repo in the Vercel dashboard).
+#     Enable "Require CI to pass before production deployment" there if wanted.
+#   - For Hostinger, download the `site` artifact and upload its contents to public_html.
+#
+# The build runs on a clean Linux runner with `npm ci`, so the CSP hashes are no
+# longer tied to any one laptop. The `Verify vercel.json` step fails if the
+# committed CSP does not match what the build produced.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Lint · typecheck · audit · build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install (clean, from lockfile, no lifecycle scripts)
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Audit production dependencies
+        run: npm run audit
+
+      - name: Audit all dependencies (informational)
+        run: npm run audit:all
+        continue-on-error: true
+
+      - name: Build static export + CSP
+        run: npm run build
+
+      - name: Verify vercel.json CSP is committed and current
+        run: |
+          if ! git diff --quiet -- vercel.json; then
+            echo "::error file=vercel.json::vercel.json is out of date. Run 'npm run build' locally and commit vercel.json."
+            git --no-pager diff -- vercel.json
+            exit 1
+          fi
+
+      - name: Verify export hygiene
+        run: |
+          set -e
+          test -f out/index.html
+          test -f out/404.html
+          test -f out/.htaccess
+          grep -q 'Content-Security-Policy "default-src' out/.htaccess
+          # Nothing that should never be public
+          if find out -type f \( -name '*.map' -o -name '*.md' -o -name '.env*' -o -name '*.lock' -o -name '*.log' \) | grep -q .; then
+            echo "::error::Unexpected sensitive file(s) in out/"; find out -type f \( -name '*.map' -o -name '*.md' -o -name '.env*' -o -name '*.lock' -o -name '*.log' \); exit 1
+          fi
+          # No inline event handlers / javascript: URLs / style attributes in rendered HTML
+          ! grep -rEl '\son[a-z]+=|href=["'\'']javascript:|\sstyle=' out --include='*.html'
+
+      - name: Upload static site (for Hostinger upload)
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: out
+          if-no-files-found: error
+          retention-days: 14
