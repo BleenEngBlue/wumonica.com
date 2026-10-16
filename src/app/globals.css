@@ -59,7 +59,7 @@
    
    @media (prefers-contrast: more) {
      :root               { --c-text-3: #2f3842; --c-border-2: #6b7480; }
-     [data-theme="dark"] { --c-text-3: #a9b3bd; --c-border-2: #4a5560; }
+     [data-theme="dark"] { --c-text-3: #a9b3bd; --c-border-2: #66727e; } /* 3.9:1 on bg, 3.7:1 on surface (WCAG 1.4.11) */
    }
    
    /* ---------- Expose tokens to Tailwind utilities ----------
@@ -193,7 +193,9 @@
      100% { box-shadow: 0 0 0 0 transparent; }
    }
    @utility pulse-dot {
-     animation: pulse-dot 2.4s ease-out infinite;
+     /* Two cycles = 4.8s, then it rests: auto-playing motion must stop within 5s
+        or offer a pause control (WCAG 2.2.2 Pause, Stop, Hide). */
+     animation: pulse-dot 2.4s ease-out 2;
      @media (prefers-reduced-motion: reduce) { animation: none; }
    }
    

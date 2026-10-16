@@ -25,10 +25,11 @@ export function Contact() {
           <p className="font-mono text-xs font-medium text-ink-3 uppercase tracking-[0.1em]">Reach me directly</p>
           <a
             href={`mailto:${SITE.email}`}
-            className="inline-flex items-center gap-[0.6ch] font-mono text-base text-ink no-underline min-h-11 hover:text-accent hover:no-underline"
+            className="inline-flex items-center gap-[0.6ch] max-w-full font-mono text-base text-ink no-underline min-h-11 hover:text-accent hover:no-underline"
           >
             <span className="text-accent" aria-hidden="true">→</span>
-            {SITE.email}
+            {/* overflow-wrap: the address may break on narrow viewports with text-spacing overrides (WCAG 1.4.12). */}
+            <span className="[overflow-wrap:anywhere]">{SITE.email}</span>
           </a>
           <CopyEmail email={SITE.email} />
           <nav className="flex flex-wrap gap-6 pt-4 border-t border-line" aria-label="Profiles">

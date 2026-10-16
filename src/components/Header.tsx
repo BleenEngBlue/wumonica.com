@@ -74,7 +74,7 @@ export function Header() {
     <header className="sticky top-0 z-100 header-glass border-b border-line">
       <nav className="flex items-center justify-between h-16 max-w-site mx-auto px-6 max-nav:px-5" aria-label="Primary">
         <a
-          href="#home"
+          href="/#home"
           className="font-display font-bold text-xl tracking-[-0.01em] no-underline text-ink inline-flex items-center min-h-11 hover:text-accent hover:no-underline transition-colors"
           aria-label={`${SITE.name} — back to top`}
         >
@@ -87,7 +87,7 @@ export function Header() {
               <a
                 href={item.href}
                 className={NAV_LINK}
-                aria-current={active === item.href.slice(1) ? "location" : undefined}
+                aria-current={active === item.href.split("#")[1] ? "location" : undefined}
               >
                 {item.label}
               </a>

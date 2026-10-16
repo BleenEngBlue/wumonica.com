@@ -49,7 +49,7 @@ export function Hero() {
                   key={s.num}
                   className="pr-8 mr-8 border-r border-line last:border-r-0 last:mr-0 last:pr-0 max-sm:pr-6 max-sm:mr-6"
                 >
-                  <span className={cx("block font-display text-[2rem] font-bold leading-none mb-[0.4rem]", "accent" in s && s.accent ? "text-accent-ink" : "text-ink")}>
+                  <span className={cx("block font-display text-[2rem] font-bold leading-none mb-[0.4rem]", s.accent ? "text-accent-ink" : "text-ink")}>
                     {s.num}
                   </span>
                   <span className="block font-mono text-xs tracking-[0.06em] uppercase text-ink-3">{s.label}</span>
@@ -77,10 +77,11 @@ export function Hero() {
             </p>
             <a
               href={`mailto:${SITE.email}`}
-              className="inline-flex items-center gap-[0.7ch] min-h-[50px] px-[1.4rem] py-[0.85rem] font-mono text-[0.9375rem] text-ink no-underline bg-surface border border-line-2 rounded-lg transition-colors hover:border-accent hover:text-accent hover:bg-accent-soft hover:no-underline"
+              className="inline-flex items-center gap-[0.7ch] max-w-full min-h-[50px] px-[1.4rem] py-[0.85rem] font-mono text-[0.9375rem] text-ink no-underline bg-surface border border-line-2 rounded-lg transition-colors hover:border-accent hover:text-accent hover:bg-accent-soft hover:no-underline"
             >
               <span className="text-accent" aria-hidden="true">→</span>
-              {SITE.email}
+              {/* overflow-wrap: the address may break on narrow viewports with text-spacing overrides (WCAG 1.4.12). */}
+              <span className="[overflow-wrap:anywhere]">{SITE.email}</span>
             </a>
             <nav className="flex gap-4 items-center" aria-label="Social profiles">
               <ExtLink href={SITE.social.github} aria-label="GitHub" className="inline-flex items-center justify-center w-11 h-11 text-ink-2 border border-line rounded-lg no-underline transition-colors hover:text-accent hover:border-accent">
@@ -89,7 +90,8 @@ export function Hero() {
               <ExtLink href={SITE.social.linkedin} aria-label="LinkedIn" className="inline-flex items-center justify-center w-11 h-11 text-ink-2 border border-line rounded-lg no-underline transition-colors hover:text-accent hover:border-accent">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
               </ExtLink>
-              <ExtLink href={SITE.social.huggingface} aria-label="Hugging Face profile" className="inline-flex items-center justify-center w-11 h-11 text-ink-2 border border-line rounded-lg no-underline font-mono text-xs font-semibold transition-colors hover:text-accent hover:border-accent">
+              {/* Visible text "HF" must be part of the accessible name (WCAG 2.5.3 Label in Name). */}
+              <ExtLink href={SITE.social.huggingface} aria-label="HF — Hugging Face profile" className="inline-flex items-center justify-center w-11 h-11 text-ink-2 border border-line rounded-lg no-underline font-mono text-xs font-semibold transition-colors hover:text-accent hover:border-accent">
                 HF
               </ExtLink>
             </nav>

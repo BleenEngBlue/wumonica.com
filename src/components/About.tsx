@@ -35,7 +35,7 @@ export function About() {
         <div className="flex flex-col gap-4 sticky top-[calc(var(--nav-h)+24px)] max-nav:static max-nav:flex-row max-nav:flex-wrap">
           {ABOUT.facts.map((f) => (
             <FadeIn key={f.num} className="bg-surface border border-line rounded-lg p-6 max-nav:flex-1 max-nav:min-w-[150px]">
-              <span className={cx("block font-display text-[2rem] font-bold leading-none mb-2", "accent" in f && f.accent ? "text-accent-ink" : "text-ink")}>
+              <span className={cx("block font-display text-[2rem] font-bold leading-none mb-2", f.accent ? "text-accent-ink" : "text-ink")}>
                 {f.num}
               </span>
               <span className="block text-sm text-ink-2 leading-[1.45]">{f.label}</span>
