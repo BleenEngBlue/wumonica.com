@@ -2,14 +2,15 @@
   "name": "wumonica-com",
   "version": "2.0.0",
   "private": true,
-  "description": "wumonica.com — Monica Wu portfolio. Next.js (App Router) + React + Tailwind CSS, static export for Hostinger.",
+  "description": "wumonica.com — Monica Wu portfolio. Next.js (App Router) + React + Tailwind CSS, static export (Hostinger or Vercel).",
   "scripts": {
     "dev": "next dev",
     "build": "next build && node scripts/csp-hashes.mjs",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "audit": "npm audit --audit-level=moderate"
+    "audit": "npm audit --omit=dev --audit-level=moderate",
+    "audit:all": "npm audit --audit-level=moderate"
   },
   "dependencies": {
     "next": "^16.0.0",
@@ -21,6 +22,8 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.2",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.9.0"
   },
