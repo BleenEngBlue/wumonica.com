@@ -8,7 +8,7 @@
 :root{
   --c-bg:#f4efe6;--c-surface:#eae3d6;--c-surface-2:#e0d8c9;
   --c-text:#12181f;--c-text-2:#333d48;--c-text-3:#4d5764;
-  --c-border:rgba(18,24,31,.10);--c-border-2:rgba(18,24,31,.20);
+  --c-border:rgba(18,24,31,.10);--c-border-2:#6b7480;
   --c-accent:#2f6b4f;--c-accent-h:#24573f;--c-accent-soft:rgba(47,107,79,.10);--c-accent-ink:#24573f;--c-focus:#2f6b4f;--c-grid:rgba(47,107,79,.05);
   --font-display:"cormorant","Cormorant Garamond",Georgia,"Times New Roman",serif;
   --font-mono:"dmMono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
@@ -19,13 +19,14 @@
 [data-theme="dark"]{
   --c-bg:#0a0f14;--c-surface:#10161d;--c-surface-2:#161d26;
   --c-text:#eef2f5;--c-text-2:#b4bec8;--c-text-3:#8b96a2;
-  --c-border:rgba(255,255,255,.08);--c-border-2:rgba(255,255,255,.14);
+  --c-border:rgba(255,255,255,.08);--c-border-2:#66727e;
   --c-accent:#6fcf97;--c-accent-h:#8ddcad;--c-accent-soft:rgba(111,207,151,.10);--c-accent-ink:#8ddcad;--c-focus:#8ddcad;--c-grid:rgba(111,207,151,.03);
   color-scheme:dark;
 }
 @media (prefers-contrast:more){
-  :root{--c-text-3:#2f3842;--c-border-2:#6b7480}
-  [data-theme="dark"]{--c-text-3:#a9b3bd;--c-border-2:#66727e}
+  /* Borders already meet 1.4.11. This only deepens muted text. */
+  :root{--c-text-3:#2f3842}
+  [data-theme="dark"]{--c-text-3:#a9b3bd}
 }
 
 *{box-sizing:border-box}

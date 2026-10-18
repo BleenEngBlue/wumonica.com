@@ -73,11 +73,22 @@ const BTN_BASE =
   "no-underline whitespace-nowrap tracking-[0.06em] transition-colors " +
   "bg-transparent text-ink border border-line-2 hover:border-accent hover:text-accent";
 
-/** Ghost button rendered as an external link. */
-export function GhostExtLink({ href, children, small }: { href: string; children: ReactNode; small?: boolean }) {
+/** Ghost button rendered as an external link. `label` must include the visible text (WCAG 2.5.3). */
+export function GhostExtLink({
+  href,
+  children,
+  small,
+  label,
+}: {
+  href: string;
+  children: ReactNode;
+  small?: boolean;
+  label?: string;
+}) {
   return (
     <ExtLink
       href={href}
+      aria-label={label}
       className={cx(BTN_BASE, small ? "min-h-9 px-[0.85rem] py-[0.4rem]" : "min-h-11 px-[1.3rem] py-[0.7rem]")}
     >
       {children}
@@ -85,10 +96,24 @@ export function GhostExtLink({ href, children, small }: { href: string; children
   );
 }
 
-/** Ghost button rendered as a same-origin / mailto link (same tab). */
-export function GhostLink({ href, children, small }: { href: string; children: ReactNode; small?: boolean }) {
+/** Ghost button rendered as a same-origin / mailto link (same tab). `label` must include the visible text (WCAG 2.5.3). */
+export function GhostLink({
+  href,
+  children,
+  small,
+  label,
+}: {
+  href: string;
+  children: ReactNode;
+  small?: boolean;
+  label?: string;
+}) {
   return (
-    <a href={href} className={cx(BTN_BASE, small ? "min-h-9 px-[0.85rem] py-[0.4rem]" : "min-h-11 px-[1.3rem] py-[0.7rem]")}>
+    <a
+      href={href}
+      aria-label={label}
+      className={cx(BTN_BASE, small ? "min-h-9 px-[0.85rem] py-[0.4rem]" : "min-h-11 px-[1.3rem] py-[0.7rem]")}
+    >
       {children}
     </a>
   );

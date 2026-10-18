@@ -9,6 +9,7 @@ export function Projects() {
 
       {PROJECTS.map((p) => {
         const titleId = `proj-${p.id}`;
+        const shortName = p.title.split(" — ")[0];
         return (
           <FadeIn
             key={p.id}
@@ -33,18 +34,26 @@ export function Projects() {
               </div>
               {/* flex-wrap: three buttons overflowed a 320px viewport (WCAG 1.4.10 Reflow). */}
               <div className="flex flex-wrap gap-2 max-sm:w-full">
-                {p.links.map((l) =>
+                {p.links.map((l) => {
+                  // Name includes the visible label plus the project (WCAG 2.4.4 and 2.5.3).
+                  const name = `${l.label}: ${shortName}`;
+                  const content = (
+                    <>
+                      {l.label}
+                      <span aria-hidden="true"> →</span>
+                    </>
+                  );
                   // Same-origin pages (case studies) stay in this tab; only off-site links open a new one.
-                  l.href.startsWith("/") ? (
-                    <GhostLink key={l.href} href={l.href} small>
-                      {l.label} →
+                  return l.href.startsWith("/") ? (
+                    <GhostLink key={l.href} href={l.href} small label={name}>
+                      {content}
                     </GhostLink>
                   ) : (
-                    <GhostExtLink key={l.href} href={l.href} small>
-                      {l.label} →
+                    <GhostExtLink key={l.href} href={l.href} small label={name}>
+                      {content}
                     </GhostExtLink>
-                  ),
-                )}
+                  );
+                })}
               </div>
             </div>
 
