@@ -62,7 +62,7 @@ jobs:
       - name: Verify vercel.json CSP is committed and current
         run: |
           if ! git diff --quiet -- vercel.json; then
-            echo "::error file=vercel.json::vercel.json is out of date. Run 'npm run build' locally and commit vercel.json."
+            echo "::error file=vercel.json::vercel.json is out of date. Commit the Linux hashes printed by scripts/csp-hashes.mjs. Do not refresh them with a Windows build."
             git --no-pager diff -- vercel.json
             exit 1
           fi

@@ -17,12 +17,11 @@
  * concatenates them either way. The hash then follows the payload, and the
  * build ID in next.config.ts keeps that payload stable across machines.
  *
- * The finished policy is written to two places:
- *   1. out/.htaccess  — Hostinger/Apache (header is read from the uploaded file).
- *   2. vercel.json    — Vercel reads this from the repo BEFORE the build, so the
- *      value must be committed. CI fails if vercel.json is stale.
- *      When running on Vercel itself (VERCEL=1) the Apache files are removed
- *      from the output so they are never served.
+ * The finished policy is written to out/.htaccess (Hostinger/Apache).
+ * vercel.json is the Vercel allow-list and must match a Linux build — this
+ * script never overwrites it. CI fails if the committed hashes are stale.
+ * When running on Vercel itself (VERCEL=1) the Apache files are removed
+ * from the output so they are never served.
  *
  * Usage:  node scripts/csp-hashes.mjs [outDir=out]
  */
@@ -224,13 +223,16 @@ function main() {
     }
     const next = JSON.stringify(config, null, 2) + "\n";
     if (next !== raw) {
-      writeFileSync(VERCEL_JSON, next);
+      // Vercel reads vercel.json before the build, so the committed hashes must
+      // match Linux CI / Vercel, not a Windows laptop. Never rewrite the file
+      // here: a local build would clobber the Ubuntu allow-list and fail CI.
+      console.error(`[csp] ${VERCEL_JSON} does not match this build's hashes.`);
+      console.error(`[csp] hashes: ${orderedHashes.join(" ")}`);
       if (process.env.CI) {
-        // On CI the committed file must already match: a stale CSP would break hydration on Vercel.
-        console.error(`[csp] ${VERCEL_JSON} was out of date. Run \`npm run build\` locally and commit ${VERCEL_JSON}.`);
+        console.error(`[csp] Commit the hashes printed above into ${VERCEL_JSON}. Do not rebuild on Windows to refresh them — the flight payload still differs by OS.`);
         process.exit(1);
       }
-      console.log(`[csp] Content-Security-Policy updated in ${VERCEL_JSON} — commit this file.`);
+      console.error(`[csp] Left ${VERCEL_JSON} unchanged. Hostinger uses out/.htaccess from this machine; Vercel uses the committed Linux hashes.`);
     } else {
       console.log(`[csp] ${VERCEL_JSON} already up to date`);
     }
