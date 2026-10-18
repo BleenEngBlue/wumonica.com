@@ -15,6 +15,9 @@ export const cormorant = localFont({
   ],
   variable: "--font-cormorant",
   display: "swap",
+  // Serif metrics — Arial (the localFont default) misses the hero heading and
+  // produces desktop CLS when swap replaces the fallback.
+  adjustFontFallback: "Times New Roman",
   fallback: ["Georgia", "Times New Roman", "serif"],
 });
 
@@ -30,9 +33,10 @@ export const dmSans = localFont({
 });
 
 /**
- * DM Mono — labels and chips. Not preloaded so Slow 4G spends first bytes on
- * DM Sans (LCP) and Cormorant (display). 400 = dark default; 500 = font-medium
- * and the light-theme .font-mono bump.
+ * DM Mono — labels and chips in the header and hero. Preloaded so the
+ * fallback→face swap does not shift desktop chrome (PSI CLS). The two Latin
+ * WOFF2s are ~15 KB each, so they no longer dominate Slow 4G the way the
+ * old TTFs did. 400 = dark default; 500 = font-medium and the light-theme bump.
  */
 export const dmMono = localFont({
   src: [
@@ -41,6 +45,5 @@ export const dmMono = localFont({
   ],
   variable: "--font-dm-mono",
   display: "swap",
-  preload: false,
   fallback: ["ui-monospace", "Menlo", "Consolas", "monospace"],
 });
