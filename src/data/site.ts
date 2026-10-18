@@ -32,12 +32,14 @@ export const SITE = {
   },
 } as const;
 
+/** Root-relative so the links also work from the 404 page (served at any URL on a static host).
+ *  On "/" the browser treats "/#about" as an in-page fragment jump — no reload. */
 export const NAV = [
-  { href: "#about", label: "About" },
-  { href: "#projects", label: "Projects" },
-  { href: "#stack", label: "Stack" },
-  { href: "#experience", label: "Experience" },
-  { href: "#contact", label: "Contact" },
+  { href: "/#about", label: "About" },
+  { href: "/#projects", label: "Projects" },
+  { href: "/#stack", label: "Stack" },
+  { href: "/#experience", label: "Experience" },
+  { href: "/#contact", label: "Contact" },
 ] as const;
 
 export const HERO = {
@@ -47,8 +49,8 @@ export const HERO = {
   ],
   status: "AI Frontend / Design Engineer · Remote (US) · Pacific",
   stats: [
-    { num: "10 yrs", label: "Shipping production UI" },
-    { num: "2 in 2026", label: "AI products designed and shipped solo" },
+    { num: "10 yrs", label: "Shipping production UI", accent: false },
+    { num: "2 in 2026", label: "AI products designed and shipped solo", accent: false },
     { num: "100% recall", label: "HITL review UI vs. seeded ground truth", accent: true },
   ],
   chips: [
@@ -65,10 +67,10 @@ export const ABOUT = {
     "The AI work started at IQVIA. Our clinical apps had to run locally on client hardware that varied site to site, so I tested whether LLM inference could clear that bar: Llama 3.1 8B on Ollama, constrained hardware, worst case. Self-initiated, no mandate. It set the AI roadmap for regulated clinical deployments.",
   ],
   facts: [
-    { num: "10 yrs", label: "Shipping production software end to end" },
-    { num: "2", label: "Production AI systems shipped in 2026, each with per-stage evals" },
+    { num: "10 yrs", label: "Shipping production software end to end", accent: false },
+    { num: "2", label: "Production AI systems shipped in 2026, each with per-stage evals", accent: false },
     { num: "$200M+/mo", label: "Payments platform I shipped for. Workflows restored within SLA, 100% of the time", accent: true },
-    { num: "~40%", label: "Faster delivery with AI-assisted development (Claude, Cursor)" },
+    { num: "~40%", label: "Faster delivery with AI-assisted development (Claude, Cursor)", accent: false },
   ],
 } as const;
 

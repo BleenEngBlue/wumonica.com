@@ -1,22 +1,25 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { cx } from "./ui";
+
+/* Clipboard availability is a static browser capability: false on the server and
+   during hydration, then the real value — no setState-in-effect needed. */
+const subscribeNoop = () => () => {};
+const readClipboardSupport = () => !!navigator.clipboard?.writeText;
+const serverClipboardSupport = () => false;
 
 /**
  * Copy-to-clipboard with a live status region (WCAG 4.1.3 — announces without
  * moving focus). Renders nothing if the Clipboard API is unavailable.
  */
 export function CopyEmail({ email }: { email: string }) {
-  const [supported, setSupported] = useState(false);
+  const supported = useSyncExternalStore(subscribeNoop, readClipboardSupport, serverClipboardSupport);
   const [copied, setCopied] = useState(false);
   const [status, setStatus] = useState("");
   const timer = useRef<number | undefined>(undefined);
 
-  useEffect(() => {
-    setSupported(typeof navigator !== "undefined" && !!navigator.clipboard?.writeText);
-    return () => window.clearTimeout(timer.current);
-  }, []);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
 
   async function copy() {
     try {

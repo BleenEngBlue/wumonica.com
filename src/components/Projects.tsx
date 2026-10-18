@@ -1,6 +1,6 @@
 import { PROJECTS } from "@/data/site";
 import { FadeIn } from "./FadeIn";
-import { Badge, GhostExtLink, Section, SectionHead, TagList, cx } from "./ui";
+import { Badge, GhostExtLink, GhostLink, Section, SectionHead, TagList, cx } from "./ui";
 
 export function Projects() {
   return (
@@ -31,12 +31,20 @@ export function Projects() {
                 </h3>
                 <p className="font-mono text-xs text-ink-3 tracking-[0.04em]">{p.sub}</p>
               </div>
-              <div className="flex gap-2 shrink-0 max-sm:w-full">
-                {p.links.map((l) => (
-                  <GhostExtLink key={l.href} href={l.href} small>
-                    {l.label} →
-                  </GhostExtLink>
-                ))}
+              {/* flex-wrap: three buttons overflowed a 320px viewport (WCAG 1.4.10 Reflow). */}
+              <div className="flex flex-wrap gap-2 max-sm:w-full">
+                {p.links.map((l) =>
+                  // Same-origin pages (case studies) stay in this tab; only off-site links open a new one.
+                  l.href.startsWith("/") ? (
+                    <GhostLink key={l.href} href={l.href} small>
+                      {l.label} →
+                    </GhostLink>
+                  ) : (
+                    <GhostExtLink key={l.href} href={l.href} small>
+                      {l.label} →
+                    </GhostExtLink>
+                  ),
+                )}
               </div>
             </div>
 
