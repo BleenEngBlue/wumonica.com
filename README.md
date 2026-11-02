@@ -46,11 +46,21 @@ public/
 ## Build
 
 ```bash
-npm install
-npm run build      # next build writes ./out, then csp-hashes.mjs completes .htaccess
+npm ci
+npm run lint && npm run typecheck && npm run audit
+npm run build      # next build writes ./out, then csp-hashes.mjs completes the CSP in
+                   # out/.htaccess (Hostinger) and vercel.json (Vercel)
 ```
 
-Upload `./out` to the web root. The fonts in `src/app/fonts/` are under the SIL Open Font License.
+The fonts in `src/app/fonts/` are under the SIL Open Font License.
+
+## Deploy
+
+**CI** (`.github/workflows/ci.yml`) runs lint, typecheck, audit, and the build on every push and PR, checks the export for anything that should never ship, and uploads `out/` as the `site` artifact. Dependabot (`.github/dependabot.yml`) opens weekly grouped update PRs.
+
+**Vercel.** Import the repo; the Next.js preset picks up `output: "export"`. Security headers come from `vercel.json`, not `.htaccess`. Because Vercel reads `vercel.json` *before* building, the CSP hashes in it must be committed: the build ID is derived from the source (`next.config.ts`), so the same source always produces the same hashes, and CI fails if `vercel.json` is stale. After changing anything under `src/` or `public/`, run `npm run build` and commit `vercel.json` with the change.
+
+**Hostinger.** Download the `site` artifact (or run the build locally) and upload the contents of `out/` to `public_html`. `.htaccess` carries the headers there.
 
 ## License
 

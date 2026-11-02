@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+
+/* Descriptive title for the 404 page (WCAG 2.4.2 Page Titled). */
+export const metadata: Metadata = {
+  title: "Page not found — Monica Wu",
+  robots: { index: false, follow: false },
+};
 
 export default function NotFound() {
   return (

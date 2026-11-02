@@ -10,7 +10,7 @@ export function Stack() {
         {STACK.map((g) => (
           <FadeIn key={g.label} className="bg-bg border border-line rounded-lg px-8 py-6">
             <h3 className="flex items-center gap-[0.6ch] font-mono text-xs font-medium text-ink-3 uppercase tracking-[0.1em] mb-4">
-              <span className="text-accent-ink tracking-[-0.05em]" aria-hidden="true">//</span>
+              <span className="text-accent-ink tracking-[-0.05em]" aria-hidden="true">{"//"}</span>
               {g.label}
             </h3>
             <TagList items={g.tags} />

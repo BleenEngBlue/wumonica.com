@@ -7,7 +7,10 @@ export function Footer() {
         <div className="flex flex-wrap justify-between items-center gap-4">
           <p className="font-mono text-xs text-ink-2 leading-[1.6]">
             {SITE.name} ·{" "}
-            <a href={`mailto:${SITE.email}`} className="text-ink-2 hover:text-accent">
+            <a
+              href={`mailto:${SITE.email}`}
+              className="text-accent-ink decoration-accent-ink hover:text-accent hover:decoration-accent"
+            >
               {SITE.email}
             </a>
           </p>

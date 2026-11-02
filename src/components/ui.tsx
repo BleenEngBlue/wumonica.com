@@ -37,21 +37,33 @@ export function TagList({ items, className }: { items: readonly string[]; classN
 /**
  * External link. Security: every off-site link gets target=_blank +
  * rel="noopener noreferrer" here — there is no other way to make one.
- * Accessibility: announces "(opens in a new tab)" to screen readers.
+ * Accessibility: announces "(opens in a new tab)" to screen readers. When an
+ * aria-label is supplied it would override child text, so the warning is
+ * appended to the label instead of rendered as a hidden span.
  */
+const NEW_TAB = "(opens in a new tab)";
+
 export function ExtLink({
   href,
   children,
   className,
+  "aria-label": ariaLabel,
   ...rest
 }: { href: string; children: ReactNode; className?: string } & Omit<
   AnchorHTMLAttributes<HTMLAnchorElement>,
   "href" | "target" | "rel"
 >) {
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={className} {...rest}>
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className}
+      aria-label={ariaLabel ? `${ariaLabel} ${NEW_TAB}` : undefined}
+      {...rest}
+    >
       {children}
-      <span className="sr-only"> (opens in a new tab)</span>
+      {!ariaLabel && <span className="sr-only"> {NEW_TAB}</span>}
     </a>
   );
 }
@@ -61,11 +73,22 @@ const BTN_BASE =
   "no-underline whitespace-nowrap tracking-[0.06em] transition-colors " +
   "bg-transparent text-ink border border-line-2 hover:border-accent hover:text-accent";
 
-/** Ghost button rendered as an external link. */
-export function GhostExtLink({ href, children, small }: { href: string; children: ReactNode; small?: boolean }) {
+/** Ghost button rendered as an external link. `label` must include the visible text (WCAG 2.5.3). */
+export function GhostExtLink({
+  href,
+  children,
+  small,
+  label,
+}: {
+  href: string;
+  children: ReactNode;
+  small?: boolean;
+  label?: string;
+}) {
   return (
     <ExtLink
       href={href}
+      aria-label={label}
       className={cx(BTN_BASE, small ? "min-h-9 px-[0.85rem] py-[0.4rem]" : "min-h-11 px-[1.3rem] py-[0.7rem]")}
     >
       {children}
@@ -73,10 +96,24 @@ export function GhostExtLink({ href, children, small }: { href: string; children
   );
 }
 
-/** Ghost button rendered as a same-origin / mailto link. */
-export function GhostLink({ href, children }: { href: string; children: ReactNode }) {
+/** Ghost button rendered as a same-origin / mailto link (same tab). `label` must include the visible text (WCAG 2.5.3). */
+export function GhostLink({
+  href,
+  children,
+  small,
+  label,
+}: {
+  href: string;
+  children: ReactNode;
+  small?: boolean;
+  label?: string;
+}) {
   return (
-    <a href={href} className={cx(BTN_BASE, "min-h-11 px-[1.3rem] py-[0.7rem]")}>
+    <a
+      href={href}
+      aria-label={label}
+      className={cx(BTN_BASE, small ? "min-h-9 px-[0.85rem] py-[0.4rem]" : "min-h-11 px-[1.3rem] py-[0.7rem]")}
+    >
       {children}
     </a>
   );
