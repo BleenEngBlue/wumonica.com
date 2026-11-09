@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "audit": "npm audit --audit-level=moderate"
+    "audit": "npm audit --omit=dev --audit-level=moderate",
+    "audit:all": "npm audit --audit-level=moderate"
   },
   "dependencies": {
     "next": "^16.4.3",
