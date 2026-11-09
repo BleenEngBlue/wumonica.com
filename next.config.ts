@@ -21,6 +21,8 @@ import { extname, join, sep } from "node:path";
  * hash on every build; hashing the inputs instead means identical source ⇒
  * identical ID ⇒ identical CSP. Changing any input still yields a new ID.
  *
+ * Only shipped dependencies count (see shippedDependencies below).
+ *
  * Must produce the same ID on a Windows laptop (CRLF checkout, "\" paths) and
  * on Linux CI/Vercel, so paths are hashed as POSIX and text files with LF only.
  */
@@ -39,8 +41,29 @@ function contentBuildId(): string {
     }
   };
   for (const d of ["src", "public"]) walk(d);
-  for (const f of ["package-lock.json", "next.config.ts", "postcss.config.mjs", "tsconfig.json"]) h.update(read(f));
+  h.update(shippedDependencies());
+  for (const f of ["next.config.ts", "postcss.config.mjs", "tsconfig.json"]) h.update(read(f));
   return h.digest("base64url").slice(0, 21); // same length/charset as Next's default IDs
+}
+
+/**
+ * Only the packages that can change what ships go into the build ID: the
+ * production dependency tree (next, react, react-dom and everything they pull
+ * in). Dev-only packages (@types/*, typescript, eslint, ...) are left out, so a
+ * Dependabot bump to one of them no longer changes the ID, the inline hydration
+ * script, or the CSP hashes in vercel.json.
+ * Dev tools that do change the output (Tailwind/PostCSS) change the content-hashed
+ * CSS file names instead, which still changes the CSP hashes when it matters.
+ */
+function shippedDependencies(): string {
+  const lock = JSON.parse(readFileSync("package-lock.json", "utf8")) as {
+    packages?: Record<string, { version?: string; integrity?: string; dev?: boolean; devOptional?: boolean }>;
+  };
+  return Object.entries(lock.packages ?? {})
+    .filter(([path, pkg]) => path !== "" && !pkg.dev && !pkg.devOptional)
+    .map(([path, pkg]) => `${path}@${pkg.version ?? ""}#${pkg.integrity ?? ""}`)
+    .sort()
+    .join("\n");
 }
 
 /**
