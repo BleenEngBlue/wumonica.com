@@ -14,6 +14,14 @@ updates:
       # One PR for all routine minor/patch bumps; majors stay separate for review.
       minor-and-patch:
         update-types: [minor, patch]
+    ignore:
+      # Keep @types/node on the same major as the Node version CI runs (22).
+      # Bump this by hand when CI moves to a newer Node.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      # TypeScript 7 (native compiler) waits until Next.js and ESLint support it.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: deps
     labels: [dependencies]
