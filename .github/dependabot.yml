@@ -15,11 +15,15 @@ updates:
       minor-and-patch:
         update-types: [minor, patch]
     ignore:
+      # (Updated 2026-11-09)
       # Keep @types/node on the same major as the Node version CI runs (22).
-      # Bump this by hand when CI moves to a newer Node.
+      # Bump it by hand when ci.yml moves to Node 24 or 26 (both LTS).
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
-      # TypeScript 7 (native compiler) waits until Next.js and ESLint support it.
+      # TypeScript 7.0 has no compiler API, so typescript-eslint (used by
+      # eslint-config-next) rejects it: peer range is typescript <6.1.0.
+      # Remove this entry once typescript-eslint supports TS 7 (expected after
+      # TS 7.1, targeted for 2026-11-24). Next.js 16.4 already supports TS 7.
       - dependency-name: "typescript"
         update-types: ["version-update:semver-major"]
     commit-message:
