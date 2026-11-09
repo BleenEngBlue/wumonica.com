@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 import { createHash } from "node:crypto";
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { extname, join, sep } from "node:path";
 
 /**
@@ -43,6 +43,29 @@ function contentBuildId(): string {
   return h.digest("base64url").slice(0, 21); // same length/charset as Next's default IDs
 }
 
+/**
+ * `next dev` serves a file in `public/` only at its exact path. A request for
+ * `/case-studies/digital-twin/` does not resolve to `index.html`, so the App
+ * Router 404s. Apache does resolve it (`DirectoryIndex` in public/.htaccess),
+ * which is why the same links work on wumonica.com. Map those directory URLs
+ * to the file during dev only. A static export has no server to apply rewrites,
+ * and Hostinger already serves the directory.
+ */
+function caseStudyDevRewrites() {
+  const root = join(process.cwd(), "public", "case-studies");
+  if (!existsSync(root)) return [];
+  const beforeFiles = [];
+  for (const name of readdirSync(root)) {
+    const dir = join(root, name);
+    if (!statSync(dir).isDirectory() || !existsSync(join(dir, "index.html"))) continue;
+    beforeFiles.push(
+      { source: `/case-studies/${name}`, destination: `/case-studies/${name}/index.html` },
+      { source: `/case-studies/${name}/`, destination: `/case-studies/${name}/index.html` },
+    );
+  }
+  return beforeFiles;
+}
+
 const nextConfig: NextConfig = {
   output: "export",
   trailingSlash: true,          // /about/ style URLs map cleanly to Apache/LiteSpeed folders
@@ -51,6 +74,10 @@ const nextConfig: NextConfig = {
   images: { unoptimized: true }, // no image optimizer in static export (site ships no raster images)
   productionBrowserSourceMaps: false,
   generateBuildId: async () => contentBuildId(),
+  async rewrites() {
+    if (process.env.NODE_ENV === "production") return [];
+    return { beforeFiles: caseStudyDevRewrites() };
+  },
 };
 
 export default nextConfig;

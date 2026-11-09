@@ -1,9 +1,9 @@
 /* Case study pages. Tokens, fonts and rules mirror wumonica.com globals.css (Tidewater dark + Linen light, Oct 3 2026).
    No inline styles or scripts (strict CSP). Fonts are self-hosted copies in /case-studies/fonts/. */
-@font-face{font-family:"cormorant";src:url(/case-studies/fonts/CormorantGaramond-Variable.ttf) format("truetype");font-display:swap;font-weight:300 700;font-style:normal}
-@font-face{font-family:"dmSans";src:url(/case-studies/fonts/DMSans-Variable.ttf) format("truetype");font-display:swap;font-weight:400 700;font-style:normal}
-@font-face{font-family:"dmMono";src:url(/case-studies/fonts/DMMono-Regular.ttf) format("truetype");font-display:swap;font-weight:400;font-style:normal}
-@font-face{font-family:"dmMono";src:url(/case-studies/fonts/DMMono-Medium.ttf) format("truetype");font-display:swap;font-weight:500;font-style:normal}
+@font-face{font-family:"cormorant";src:url(/case-studies/fonts/cormorant-garamond-latin-wght-normal.woff2) format("woff2");font-display:swap;font-weight:300 700;font-style:normal}
+@font-face{font-family:"dmSans";src:url(/case-studies/fonts/dm-sans-latin-wght-normal.woff2) format("woff2");font-display:swap;font-weight:400 700;font-style:normal}
+@font-face{font-family:"dmMono";src:url(/case-studies/fonts/dm-mono-latin-400-normal.woff2) format("woff2");font-display:swap;font-weight:400;font-style:normal}
+@font-face{font-family:"dmMono";src:url(/case-studies/fonts/dm-mono-latin-500-normal.woff2) format("woff2");font-display:swap;font-weight:500;font-style:normal}
 
 :root{
   --c-bg:#f4efe6;--c-surface:#eae3d6;--c-surface-2:#e0d8c9;

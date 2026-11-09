@@ -7,12 +7,11 @@
   document.addEventListener('DOMContentLoaded', function () {
     var b = document.getElementById('theme-toggle');
     if (!b) return;
-    /* Toggle-button pattern (WCAG 4.1.2): the name stays constant ("Dark theme") and
-       aria-pressed reports whether dark is active — same contract as Header.tsx. */
+    /* The visible name is the active theme. aria-pressed is true while dark is on. */
     function sync() {
       var dark = d.getAttribute('data-theme') === 'dark';
       b.setAttribute('aria-pressed', dark ? 'true' : 'false');
-      b.textContent = 'Dark theme';
+      b.textContent = dark ? 'Dark theme' : 'Light theme';
     }
     sync();
     b.addEventListener('click', function () {
