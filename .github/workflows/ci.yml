@@ -82,7 +82,7 @@ jobs:
           ! grep -rEl '\son[a-z]+=|href=["'\'']javascript:|\sstyle=' out --include='*.html'
 
       - name: Upload static site (for Hostinger upload)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: site
           path: out
