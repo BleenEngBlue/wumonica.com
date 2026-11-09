@@ -174,7 +174,7 @@ export type Job = {
 export const EXPERIENCE: Job[] = [
   {
     date: "Aug 2025 — present · 1 yr 3 mos",
-    company: "Wumonica Studio (Independent) · Self-employed · Remote",
+    company: "Wumonica Studio (Independent) · Freelance · Remote",
     role: "AI Frontend Engineer",
     body: "Shipped 2 production AI products in 2026, prototype to deploy, solo. Reconciliation Workbench: a human-in-the-loop review UI cut to the one screen a reviewer needs, built in 2 days, 100% recall and 1.0 precision against seeded ground truth. Digital Twin: an agentic RAG agent (Python, OpenAI API, ChromaDB), live since May 2026 with latency, cost, and errors monitored in production. Let the interface shape the data: every source had to look identical on the reviewer's screen, so a new jurisdiction is one JSON entry and zero code changes. Per-stage eval harnesses pinpoint the stage that degraded. Designed and built this site in Next.js, TypeScript, and Tailwind CSS. Build with Claude and Cursor daily: ~40% faster delivery, every change review-ready.",
     tags: ["Design + build", "Next.js", "Tailwind CSS", "TypeScript", "Human-in-the-loop UI", "Agentic RAG", "Evals", "Python", "OpenAI API", "Claude", "Cursor"],
