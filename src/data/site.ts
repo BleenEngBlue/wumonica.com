@@ -1,6 +1,6 @@
 /**
  * site.ts — single source of truth for all copy on wumonica.com.
- * Last content revision: 3 Oct 2026.
+ * Last content revision: 1 Nov 2026.
  * Plain data only: no HTML strings are rendered raw anywhere (see components).
  */
 
@@ -8,7 +8,7 @@ export const SITE = {
   name: "Monica Wu",
   url: "https://wumonica.com",
   email: "wumonica.eng@gmail.com",
-  updated: "3 Oct 2026",
+  updated: "1 Nov 2026",
   headline:
     "AI Frontend Engineer · Design Engineer · Product Engineer · Design Systems · LLM Products",
   title: "Monica Wu — AI Frontend Engineer · Design Engineer · Design Systems · LLM Products",
@@ -32,12 +32,14 @@ export const SITE = {
   },
 } as const;
 
+/** Root-relative so the links also work from the 404 page (served at any URL on a static host).
+ *  On "/" the browser treats "/#about" as an in-page fragment jump — no reload. */
 export const NAV = [
-  { href: "#about", label: "About" },
-  { href: "#projects", label: "Projects" },
-  { href: "#stack", label: "Stack" },
-  { href: "#experience", label: "Experience" },
-  { href: "#contact", label: "Contact" },
+  { href: "/#about", label: "About" },
+  { href: "/#projects", label: "Projects" },
+  { href: "/#stack", label: "Stack" },
+  { href: "/#experience", label: "Experience" },
+  { href: "/#contact", label: "Contact" },
 ] as const;
 
 export const HERO = {
@@ -47,8 +49,8 @@ export const HERO = {
   ],
   status: "AI Frontend / Design Engineer · Remote (US) · Pacific",
   stats: [
-    { num: "10 yrs", label: "Shipping production UI" },
-    { num: "2 in 2026", label: "AI products designed and shipped solo" },
+    { num: "10 yrs", label: "Shipping production UI", accent: false },
+    { num: "2 in 2026", label: "AI products designed and shipped solo", accent: false },
     { num: "100% recall", label: "HITL review UI vs. seeded ground truth", accent: true },
   ],
   chips: [
@@ -65,10 +67,10 @@ export const ABOUT = {
     "The AI work started at IQVIA. Our clinical apps had to run locally on client hardware that varied site to site, so I tested whether LLM inference could clear that bar: Llama 3.1 8B on Ollama, constrained hardware, worst case. Self-initiated, no mandate. It set the AI roadmap for regulated clinical deployments.",
   ],
   facts: [
-    { num: "10 yrs", label: "Shipping production software end to end" },
-    { num: "2", label: "Production AI systems shipped in 2026, each with per-stage evals" },
-    { num: "$200M+/mo", label: "Payments platform I shipped for. Workflows restored within SLA, 100% of the time", accent: true },
-    { num: "~40%", label: "Faster delivery with AI-assisted development (Claude, Cursor)" },
+    { num: "10 yrs", label: "Shipping production software end to end", accent: false },
+    { num: "2", label: "Production AI systems shipped in 2026, each with per-stage evals", accent: false },
+    { num: "$200M+ / month", label: "Payments platform I shipped for. Workflows restored within SLA, 100% of the time", accent: true },
+    { num: "~40%", label: "Faster delivery with AI-assisted development (Claude, Cursor)", accent: false },
   ],
 } as const;
 
@@ -157,7 +159,7 @@ export const STACK: { label: string; tags: string[] }[] = [
   { label: "Ship & deploy", tags: ["Production AI Systems", "Hugging Face Spaces", "Gradio", "CI/CD", "Production Deployment", "Test Automation", "Bandit / pip-audit", "0 to 1 Product Build"] },
   { label: "Languages & frameworks", tags: ["Python", "TypeScript", "JavaScript", "React", "Next.js", "Tailwind CSS", "Node.js", "Angular · RxJS", "Redux", "REST APIs", "MongoDB", "Pandas", "Jupyter"] },
   { label: "AI-assisted engineering", tags: ["Anthropic Claude", "Claude Cowork", "Cursor", "CLAUDE.md · skills · slash commands", "Cursor Rules"] },
-  { label: "Domains", tags: ["FinTech · Payments ($200M+/mo)", "Tax & Regulatory Compliance", "Healthcare IT · Clinical research", "Media (NBCNews.com)", "Regulated / high-reliability"] },
+  { label: "Domains", tags: ["FinTech · Payments ($200M+ / month)", "Tax & Regulatory Compliance", "Healthcare IT · Clinical research", "Media (NBCNews.com)", "Regulated / high-reliability"] },
 ];
 
 export type Job = {
@@ -195,8 +197,8 @@ export const EXPERIENCE: Job[] = [
     date: "Jul 2018 — Jan 2022 · 3 yrs 7 mos",
     company: "Accenture · Full-time · Greater Seattle Area · Hybrid",
     role: "Software Engineer",
-    body: "Shipped transaction-critical frontend features for an enterprise payments platform processing $200M+/month, tuning UI performance on authorization and money-movement flows. Root-caused critical production defects and restored payment workflows within SLA 100% of the time. On a ~1-year telecom engagement, built a client design system and published it to npm as versioned releases so the client's teams could upgrade incrementally. Mentored 2 engineers in advanced Angular (RxJS, state management, lazy loading), getting them productive 3 weeks sooner.",
-    tags: ["FinTech · Payments ($200M+/mo)", "Design system · npm library (telecom)", "High reliability", "Root-cause analysis", "TypeScript", "Angular · RxJS", "Mentoring"],
+    body: "Shipped transaction-critical frontend features for an enterprise payments platform processing $200M+ / month, tuning UI performance on authorization and money-movement flows. Root-caused critical production defects and restored payment workflows within SLA 100% of the time. On a ~1-year telecom engagement, built a client design system and published it to npm as versioned releases so the client's teams could upgrade incrementally. Mentored 2 engineers in advanced Angular (RxJS, state management, lazy loading), getting them productive 3 weeks sooner.",
+    tags: ["FinTech · Payments ($200M+ / month)", "Design system · npm library (telecom)", "High reliability", "Root-cause analysis", "TypeScript", "Angular · RxJS", "Mentoring"],
   },
   {
     date: "Jan 2018 — May 2018 · 5 mos",

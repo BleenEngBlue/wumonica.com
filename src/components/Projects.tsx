@@ -1,6 +1,6 @@
 import { PROJECTS } from "@/data/site";
 import { FadeIn } from "./FadeIn";
-import { Badge, GhostExtLink, Section, SectionHead, TagList, cx } from "./ui";
+import { Badge, GhostExtLink, GhostLink, Section, SectionHead, TagList, cx } from "./ui";
 
 export function Projects() {
   return (
@@ -9,6 +9,7 @@ export function Projects() {
 
       {PROJECTS.map((p) => {
         const titleId = `proj-${p.id}`;
+        const shortName = p.title.split(" — ")[0];
         return (
           <FadeIn
             key={p.id}
@@ -31,12 +32,28 @@ export function Projects() {
                 </h3>
                 <p className="font-mono text-xs text-ink-3 tracking-[0.04em]">{p.sub}</p>
               </div>
-              <div className="flex gap-2 shrink-0 max-sm:w-full">
-                {p.links.map((l) => (
-                  <GhostExtLink key={l.href} href={l.href} small>
-                    {l.label} →
-                  </GhostExtLink>
-                ))}
+              {/* flex-wrap: three buttons overflowed a 320px viewport (WCAG 1.4.10 Reflow). */}
+              <div className="flex flex-wrap gap-2 max-sm:w-full">
+                {p.links.map((l) => {
+                  // Name includes the visible label plus the project (WCAG 2.4.4 and 2.5.3).
+                  const name = `${l.label}: ${shortName}`;
+                  const content = (
+                    <>
+                      {l.label}
+                      <span aria-hidden="true"> →</span>
+                    </>
+                  );
+                  // Same-origin pages (case studies) stay in this tab; only off-site links open a new one.
+                  return l.href.startsWith("/") ? (
+                    <GhostLink key={l.href} href={l.href} small label={name}>
+                      {content}
+                    </GhostLink>
+                  ) : (
+                    <GhostExtLink key={l.href} href={l.href} small label={name}>
+                      {content}
+                    </GhostExtLink>
+                  );
+                })}
               </div>
             </div>
 

@@ -1,9 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { NAV, SITE } from "@/data/site";
 import { THEME_STORAGE_KEY, normalizeTheme, type Theme } from "@/lib/theme";
 import { cx } from "./ui";
+
+/* The <html data-theme> attribute (set pre-paint by THEME_INIT_SCRIPT) is the
+   source of truth for the theme. Reading it through useSyncExternalStore keeps
+   the server/hydration render on the "dark" default and avoids a setState-in-effect. */
+const subscribeTheme = (onChange: () => void) => {
+  const mo = new MutationObserver(onChange);
+  mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  return () => mo.disconnect();
+};
+const readTheme = (): Theme => normalizeTheme(document.documentElement.getAttribute("data-theme"));
+const serverTheme = (): Theme => "dark";
 
 const NAV_LINK =
   "font-mono text-xs text-ink-2 no-underline py-2 tracking-[0.08em] uppercase relative transition-colors " +
@@ -13,26 +24,20 @@ const NAV_LINK =
   "aria-[current=location]:text-ink aria-[current=location]:after:w-full";
 
 export function Header() {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const theme = useSyncExternalStore(subscribeTheme, readTheme, serverTheme);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>("");
   const hamburgerRef = useRef<HTMLButtonElement>(null);
   const mobileRef = useRef<HTMLDivElement>(null);
 
-  /* Sync initial theme from the attribute the pre-paint script set. */
-  useEffect(() => {
-    setTheme(normalizeTheme(document.documentElement.getAttribute("data-theme")));
-  }, []);
-
   const applyTheme = useCallback((next: Theme) => {
     const t = normalizeTheme(next); // allow-list — never write arbitrary values
-    document.documentElement.setAttribute("data-theme", t);
+    document.documentElement.setAttribute("data-theme", t); // MutationObserver above re-renders
     try {
       localStorage.setItem(THEME_STORAGE_KEY, t);
     } catch {
       /* storage unavailable (private mode) — theme still applies for this page view */
     }
-    setTheme(t);
   }, []);
 
   /* Mobile menu: Escape closes and returns focus; outside click closes. */
@@ -73,8 +78,11 @@ export function Header() {
   return (
     <header className="sticky top-0 z-100 header-glass border-b border-line">
       <nav className="flex items-center justify-between h-16 max-w-site mx-auto px-6 max-nav:px-5" aria-label="Primary">
+        {/* Fragment link to the one page: native anchor navigation works without JS and
+            keeps scroll-padding/scroll-spy behaviour, so <Link> adds nothing here. */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a
-          href="#home"
+          href="/#home"
           className="font-display font-bold text-xl tracking-[-0.01em] no-underline text-ink inline-flex items-center min-h-11 hover:text-accent hover:no-underline transition-colors"
           aria-label={`${SITE.name} — back to top`}
         >
@@ -87,7 +95,7 @@ export function Header() {
               <a
                 href={item.href}
                 className={NAV_LINK}
-                aria-current={active === item.href.slice(1) ? "location" : undefined}
+                aria-current={active === item.href.split("#")[1] ? "location" : undefined}
               >
                 {item.label}
               </a>

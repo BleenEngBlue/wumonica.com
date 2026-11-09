@@ -6,7 +6,7 @@ Portfolio site for Monica Wu — AI Frontend Engineer · Design Engineer. Design
 
 ## What it is
 
-A single-page, statically exported Next.js site with a hand-built design system: two themes (Obsidian dark, Vellum light), a display serif paired with a mono UI face and a compact body sans, and every color pair verified at WCAG 2.2 AA or better. All copy lives in one typed data file, so the components never carry strings and the site can be re-positioned by editing one file.
+A single-page, statically exported Next.js site with a hand-built design system: two themes (Tidewater dark, Linen light), a display serif paired with a mono UI face and a compact body sans, and every color pair verified at WCAG 2.2 AA or better. All copy lives in one typed data file, so the components never carry strings and the site can be re-positioned by editing one file.
 
 ## Stack
 
@@ -46,11 +46,26 @@ public/
 ## Build
 
 ```bash
-npm install
-npm run build      # next build writes ./out, then csp-hashes.mjs completes .htaccess
+npm ci
+npm run lint
+npm run typecheck
+npm run audit
+npm run build
 ```
 
-Upload `./out` to the web root. The fonts in `src/app/fonts/` are under the SIL Open Font License.
+The checks are separate commands so they paste into Windows PowerShell 5.1. `cmd`, bash, and PowerShell 7 also accept them on one line joined with `&&`.
+
+`npm run build` writes `./out`, then `csp-hashes.mjs` writes the Content-Security-Policy into `out/.htaccess` for Hostinger. It leaves `vercel.json` unchanged.
+
+The fonts in `src/app/fonts/` are under the SIL Open Font License.
+
+## Deploy
+
+**CI** (`.github/workflows/ci.yml`) runs lint, typecheck, audit, and the build on every push and PR, checks the export for anything that should never ship, and uploads `out/` as the `site` artifact. Dependabot (`.github/dependabot.yml`) opens weekly grouped update PRs.
+
+**Vercel.** Import the repo; the Next.js preset picks up `output: "export"`. Security headers come from `vercel.json`, not `.htaccess`. Because Vercel reads `vercel.json` *before* building, the CSP hashes in it must be committed: the build ID is derived from the source (`next.config.ts`), so the same source always produces the same hashes. CI fails when those hashes are stale and prints the Linux values to commit. A Windows `npm run build` does not rewrite `vercel.json`.
+
+**Hostinger.** Download the `site` artifact (or run the build locally) and upload the contents of `out/` to `public_html`. `.htaccess` carries the headers there.
 
 ## License
 

@@ -16,3 +16,6 @@ npm-debug.log*
 *.log
 
 .history/
+
+AGENTS.md
+CLAUDE.md

@@ -52,7 +52,16 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <JsonLd data={JSON_LD} />
       </head>
-      <body>{children}</body>
+      <body>
+        {/* Skip link lives in the layout so every page (including 404) has it — WCAG 2.4.1. */}
+        <a
+          href="#main-content"
+          className="absolute -top-[200%] left-4 z-300 px-4 py-[0.6rem] bg-accent text-bg font-mono text-sm font-medium rounded-lg no-underline focus-visible:top-4 focus-visible:text-bg"
+        >
+          Skip to main content
+        </a>
+        {children}
+      </body>
     </html>
   );
 }

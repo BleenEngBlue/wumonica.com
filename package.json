@@ -7,12 +7,13 @@
     "dev": "next dev",
     "build": "next build && node scripts/csp-hashes.mjs",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "audit": "npm audit --audit-level=moderate"
+    "audit": "npm audit --omit=dev --audit-level=moderate",
+    "audit:all": "npm audit --audit-level=moderate"
   },
   "dependencies": {
-    "next": "^16.0.0",
+    "next": "^16.4.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
@@ -21,6 +22,8 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "eslint": "^10.14.0",
+    "eslint-config-next": "^16.4.1",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.9.0"
   },

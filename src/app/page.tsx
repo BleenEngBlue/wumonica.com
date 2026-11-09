@@ -11,12 +11,6 @@ import { Footer } from "@/components/Footer";
 export default function HomePage() {
   return (
     <>
-      <a
-        href="#main-content"
-        className="absolute -top-[200%] left-4 z-300 px-4 py-[0.6rem] bg-accent text-bg font-mono text-sm font-medium rounded-lg no-underline focus-visible:top-4 focus-visible:text-bg"
-      >
-        Skip to main content
-      </a>
       <Header />
       <main id="main-content">
         <Hero />

@@ -24,7 +24,7 @@
      --c-text-2:      #333d48;   /* 10.1:1 on bg */
      --c-text-3:      #4d5764;   /* 6.6:1 on bg, 5.4:1 on surface-2 */
      --c-border:      rgba(18, 24, 31, 0.10);
-     --c-border-2:    rgba(18, 24, 31, 0.20);
+     --c-border-2:    #6b7480;   /* control edges — 3.9:1 on bg, 3.7:1 on surface (WCAG 1.4.11) */
      --c-accent:      #2f6b4f;   /* spruce — 5.5:1 on bg (AA for UI + text) */
      --c-accent-h:    #24573f;
      --c-accent-soft: rgba(47, 107, 79, 0.10);
@@ -47,7 +47,7 @@
      --c-text-2:      #b4bec8;   /* body copy — 10.5:1 on bg */
      --c-text-3:      #8b96a2;   /* labels — 6.4:1 on bg */
      --c-border:      rgba(255, 255, 255, 0.08);
-     --c-border-2:    rgba(255, 255, 255, 0.14);
+     --c-border-2:    #66727e;   /* control edges — 3.9:1 on bg, 3.7:1 on surface (WCAG 1.4.11) */
      --c-accent:      #6fcf97;   /* 10.1:1 on bg */
      --c-accent-h:    #8ddcad;
      --c-accent-soft: rgba(111, 207, 151, 0.10);
@@ -58,8 +58,9 @@
    }
    
    @media (prefers-contrast: more) {
-     :root               { --c-text-3: #2f3842; --c-border-2: #6b7480; }
-     [data-theme="dark"] { --c-text-3: #a9b3bd; --c-border-2: #4a5560; }
+     /* Borders already meet 1.4.11. This only deepens muted text. */
+     :root               { --c-text-3: #2f3842; }
+     [data-theme="dark"] { --c-text-3: #a9b3bd; }
    }
    
    /* ---------- Expose tokens to Tailwind utilities ----------
@@ -193,7 +194,9 @@
      100% { box-shadow: 0 0 0 0 transparent; }
    }
    @utility pulse-dot {
-     animation: pulse-dot 2.4s ease-out infinite;
+     /* Two cycles = 4.8s, then it rests: auto-playing motion must stop within 5s
+        or offer a pause control (WCAG 2.2.2 Pause, Stop, Hide). */
+     animation: pulse-dot 2.4s ease-out 2;
      @media (prefers-reduced-motion: reduce) { animation: none; }
    }
    
