@@ -16,9 +16,10 @@ export const cormorant = localFont({
   variable: "--font-cormorant",
   display: "swap",
   // Serif metrics — Arial (the localFont default) misses the hero heading and
-  // produces desktop CLS when swap replaces the fallback.
+  // produces desktop CLS when swap replaces the fallback. next/font emits one
+  // normal-style override face; italic uses "Cormorant Fallback" in globals.css.
   adjustFontFallback: "Times New Roman",
-  fallback: ["Georgia", "Times New Roman", "serif"],
+  fallback: ["Cormorant Fallback", "Georgia", "Times New Roman", "serif"],
 });
 
 /**
@@ -29,6 +30,9 @@ export const dmSans = localFont({
   src: [{ path: "./fonts/dm-sans-latin-wght-normal.woff2", weight: "400 700", style: "normal" }],
   variable: "--font-dm-sans",
   display: "swap",
+  // Metric-matched Arial. The localFont default is already Arial; name it so
+  // the override face stays in front of the system stack.
+  adjustFontFallback: "Arial",
   fallback: ["system-ui", "-apple-system", "Segoe UI", "sans-serif"],
 });
 
@@ -45,5 +49,9 @@ export const dmMono = localFont({
   ],
   variable: "--font-dm-mono",
   display: "swap",
+  // next/font can metric-match Arial or Times New Roman only. Arial adjusted
+  // to DM Mono's average width is the fallback used while the WOFF2 loads.
+  // 400 and 500 share the same advance metrics, so one override face covers both.
+  adjustFontFallback: "Arial",
   fallback: ["ui-monospace", "Menlo", "Consolas", "monospace"],
 });

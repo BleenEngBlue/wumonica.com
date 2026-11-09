@@ -6,6 +6,20 @@
    ============================================================ */
    @import "tailwindcss";
 
+   /* Italic Cormorant metric fallback. next/font's adjustFontFallback face is
+      font-style: normal, so italic headings would otherwise swap against Georgia.
+      Overrides are the Latin variable italic vs Times New Roman (az average width). */
+   @font-face {
+     font-family: "Cormorant Fallback";
+     src: local("Times New Roman");
+     font-style: italic;
+     font-weight: 300 700;
+     ascent-override: 106.84%;
+     descent-override: 33.18%;
+     line-gap-override: 0%;
+     size-adjust: 86.49%;
+   }
+
    /* Theme is a data attribute on <html>, set before paint (see layout.tsx). */
    @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
    @custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
