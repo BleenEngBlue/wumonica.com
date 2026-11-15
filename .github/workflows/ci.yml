@@ -1,9 +1,16 @@
-# wumonica.com — CI quality gate
+# wumonica.com — CI quality gate + Vercel deploy
 #
-# Runs on every push and pull request. Nothing deploys from here:
-#   - Vercel builds from Git on its own (connect the repo in the Vercel dashboard).
-#     Enable "Require CI to pass before production deployment" there if wanted.
-#   - For Hostinger, download the `site` artifact and upload its contents to public_html.
+# Runs on every push and pull request.
+#   - build:  lint, typecheck, audit, static export + CSP, export hygiene checks.
+#   - deploy: ONLY on push to main, ONLY if build passed. Deploys to Vercel with
+#             the Vercel CLI (pull -> build -> deploy --prebuilt). PRs never deploy.
+#   - Vercel's own Git auto-deploy stays OFF (no repo connected in Vercel
+#     Settings > Git), so each merge deploys exactly once, from here.
+#
+# Required repository secrets (Settings > Secrets and variables > Actions):
+#   VERCEL_TOKEN       Vercel > Account Settings > Tokens
+#   VERCEL_ORG_ID      "orgId" in .vercel/project.json (created by `vercel link`)
+#   VERCEL_PROJECT_ID  "projectId" in .vercel/project.json
 #
 # The build runs on a clean Linux runner with `npm ci`, so the CSP hashes are no
 # longer tied to any one laptop. The `Verify vercel.json` step fails if the
@@ -21,7 +28,8 @@ permissions:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # Cancel stale PR runs, but never cancel a production deploy halfway through.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -81,7 +89,7 @@ jobs:
           # No inline event handlers / javascript: URLs / style attributes in rendered HTML
           ! grep -rEl '\son[a-z]+=|href=["'\'']javascript:|\sstyle=' out --include='*.html'
 
-      - name: Upload static site (for Hostinger upload)
+      - name: Upload static site (backup copy of the exact build)
         uses: actions/upload-artifact@v7
         with:
           name: site
@@ -89,3 +97,39 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 14
+
+  deploy:
+    name: Deploy to Vercel
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: https://wumonica.com
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install (clean, from lockfile)
+        run: npm ci
+
+      - name: Pull Vercel project settings (production)
+        run: npx --yes vercel@65 pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Build on this Linux runner
+        run: npx --yes vercel@65 build --prod --token="$VERCEL_TOKEN"
+
+      - name: Deploy the prebuilt output to production
+        run: npx --yes vercel@65 deploy --prebuilt --prod --token="$VERCEL_TOKEN"
