@@ -36,9 +36,9 @@ export function Hero() {
         <div className="w-16 h-px bg-accent mt-8 mb-7" aria-hidden="true" />
 
         <p className="text-tagline leading-[1.45] tracking-[-0.005em] text-ink-2 max-w-[48ch] mb-10">
-          I <strong className="text-ink font-semibold">design the interface and build what&apos;s behind it</strong> — production
+          I <strong className="text-ink font-semibold">design the interface and build what&apos;s behind it</strong>: production
           UI, design systems, and AI products, owned end to end.{" "}
-          <em className="text-accent-ink not-italic">B.A. Design · 10 yrs of production frontend, 6 in regulated fintech and healthcare · ex-Microsoft, IQVIA.</em>
+          <em className="text-accent-ink not-italic">B.A. in Art, Option: Design. 10 years of production frontend, nearly 4 in healthcare. Inteliquet (an IQVIA business), Inovalon, Accenture, Microsoft (contract).</em>
         </p>
 
         <div className="grid grid-cols-[1.4fr_1fr] gap-12 items-end max-nav:grid-cols-1 max-nav:gap-8 max-nav:items-start">
