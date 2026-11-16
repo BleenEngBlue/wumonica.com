@@ -43,11 +43,11 @@ export function Hero() {
 
         <div className="grid grid-cols-[1.4fr_1fr] gap-12 items-end max-nav:grid-cols-1 max-nav:gap-8 max-nav:items-start">
           <div>
-            <div className="flex flex-wrap mb-6 max-sm:gap-y-4">
+            <div className="grid grid-cols-3 gap-x-6 mb-6 max-sm:grid-cols-1 max-sm:gap-y-4">
               {HERO.stats.map((s) => (
                 <div
                   key={s.num}
-                  className="pr-8 mr-8 border-r border-line last:border-r-0 last:mr-0 last:pr-0 max-sm:pr-6 max-sm:mr-6"
+                  className="pr-6 border-r border-line last:border-r-0 last:pr-0 max-sm:border-r-0 max-sm:pr-0"
                 >
                   <span className={cx("block font-display text-[2rem] font-bold leading-none mb-[0.4rem]", s.accent ? "text-accent-ink" : "text-ink")}>
                     {s.num}
